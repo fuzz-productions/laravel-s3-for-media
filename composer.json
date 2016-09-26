@@ -1,6 +1,6 @@
 {
-	"name": "fuzz/s3-for-images",
-	"description": "A wrapper around the Laravel filesystem to help with image uploads.",
+	"name": "fuzz/s3-for-media",
+	"description": "A wrapper around the Laravel filesystem to help with media uploads.",
 	"authors": [
 		{
 			"name": "Fuzz Productions",
@@ -18,8 +18,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Fuzz\\S3ForImages\\": "src/",
-			"Fuzz\\S3ForImages\\Tests\\": "tests/"
+			"Fuzz\\S3ForMedia\\": "src/",
+			"Fuzz\\S3ForMedia\\Tests\\": "tests/"
 		}
 	},
 	"minimum-stability": "dev"

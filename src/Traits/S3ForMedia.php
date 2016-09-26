@@ -1,17 +1,17 @@
 <?php
 
-namespace Fuzz\S3ForImages\Traits;
+namespace Fuzz\S3ForMedia\Traits;
 
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
 
 /**
- * Use the S3ForImages trait when needing to deal with image uploading to S3.
+ * Use the S3ForMedia trait when needing to deal with image uploading to S3.
  *
  * @package Tapwiser\Traits
  */
-trait S3ForImages
+trait S3ForMedia
 {
 	/**
 	 * Checks if the base64 encoding is a valid image.
@@ -20,15 +20,15 @@ trait S3ForImages
 	 *
 	 * @return bool
 	 */
-	public function isBase64Image($encoding)
+	public function isBase64MediaFile($encoding)
 	{
 		$fileInfo = finfo_open();
 
 		$mime_type = finfo_buffer($fileInfo, base64_decode($encoding), FILEINFO_MIME_TYPE);
-
+// die($mime_type);
 		finfo_close($fileInfo);
 
-		return (strpos($mime_type, 'image/') === 0);
+		return (strpos($mime_type, 'image/') === 0 || strpos($mime_type, 'application/pdf') === 0);
 	}
 
 	/**
@@ -80,7 +80,7 @@ trait S3ForImages
 	 *
 	 * @return bool
 	 */
-	public function isImageFile(File $file)
+	public function isMediaFile(File $file)
 	{
 		return in_array(
 			$file->guessExtension(), [
@@ -89,6 +89,7 @@ trait S3ForImages
 				'gif',
 				'bmp',
 				'svg',
+				'pdf',
 			]
 		);
 	}
@@ -141,7 +142,7 @@ trait S3ForImages
 	 *
 	 * @return string - The url location for the image.
 	 */
-	public function pushImageToS3($key, $image, $visibility)
+	public function pushMediaToS3($key, $image, $visibility)
 	{
 		if (is_string($image)) {
 			return $this->pushBase64ImageToS3($key, $image, $visibility);
@@ -167,8 +168,8 @@ trait S3ForImages
 	public function pushFileToS3($key, $image, $visibility)
 	{
 		// Validate $image is a file and that the file is a valid Image.
-		if (! $this->isFile($image) || ! $this->isImageFile($image)) {
-			throw new \InvalidArgumentException('The file could not be processed. It is not a valid image.');
+		if (! $this->isFile($image) || ! $this->isMediaFile($image)) {
+			throw new \InvalidArgumentException('The file could not be processed. It is not a valid media file.');
 		}
 
 		$stream = file_get_contents($image);
@@ -193,7 +194,7 @@ trait S3ForImages
 	public function pushBase64ImageToS3($key, $image, $visibility)
 	{
 		// Validate base64 is an actual image.
-		if (! $this->isBase64Image($image)) {
+		if (! $this->isBase64MediaFile($image)) {
 			throw new \InvalidArgumentException('The base64 encoded string is not a valid image.');
 		}
 

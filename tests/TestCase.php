@@ -1,6 +1,6 @@
 <?php
 
-namespace Fuzz\S3ForImages\Tests;
+namespace Fuzz\S3ForMedia\Tests;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
